@@ -1,0 +1,23 @@
+package com.app.newsnation.utils
+
+import com.app.newsnation.model.Category
+
+object Constants {
+
+    const val TAG = "MY_TAG"
+
+    const val BASE_URL = "https://newsapi.org/"
+    const val API_KEY = "f2b1c555c06546a7a0fb10b90de52084"
+    const val TABLE_NAME = "articles"
+
+    val clist = listOf<Category>(
+        Category("All"),
+//        Category("General"),
+        Category("Entertainment"),
+        Category("Business"),
+        Category("Health"),
+        Category("Science"),
+        Category("Sports"),
+        Category("Technology"),
+        )
+}
