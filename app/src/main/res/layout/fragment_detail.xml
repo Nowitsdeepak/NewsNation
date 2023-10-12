@@ -44,7 +44,7 @@
                     android:fontFamily="@font/montserrat_semibold"
                     android:padding="8dp"
                     android:text="@{data.title}"
-                    android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                     android:textColor="@color/white"
                     tools:text="title" />
 

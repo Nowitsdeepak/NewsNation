@@ -2,13 +2,12 @@ package com.app.newsnation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.app.newsnation.ui.BookmarkFragment
-import com.app.newsnation.ui.MainFragment
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,6 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,34 +29,14 @@ class MainActivity : AppCompatActivity() {
 
         navController = navHostFragment.navController
 
-        setupActionBarWithNavController(navController)
+        appBarConfiguration = AppBarConfiguration(setOf(R.id.mainFragment, R.id.bookmarkFragment))
 
-        bottomNavView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.menuHome -> {
-                    toolbar.title = "News Nation"
-                    loadFragment(MainFragment())
-                    item.icon = ResourcesCompat.getDrawable(resources, R.drawable.homedark, null)
-                    return@setOnItemSelectedListener true
-                }
-                R.id.menuBookmark -> {
-                    toolbar.title = "Bookmarks"
-                    loadFragment(BookmarkFragment())
-                    return@setOnItemSelectedListener true
-                }
-            }
-            false
-        }
+        setupActionBarWithNavController(navController, appBarConfiguration)
+
+        bottomNavView.setupWithNavController(navController)
 
     }
 
-    private fun loadFragment(fragment: Fragment) {
-        // load fragment
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragmentContainerView, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp()

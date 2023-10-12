@@ -8,43 +8,57 @@
     android:orientation="vertical"
     tools:context=".ui.MainFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_category"
+    <include
+        android:id="@+id/includedConnectionError"
+        layout="@layout/indicator_status"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_categories">
+        android:orientation="vertical">
 
-    </androidx.recyclerview.widget.RecyclerView>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp">
-
-        <View
-            android:id="@+id/divider"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_category"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/black_25" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_categories">
 
-        <com.google.android.material.progressindicator.LinearProgressIndicator
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:indeterminate="true"
-            app:trackColor="@color/mint"
-            app:trackCornerRadius="8dp"
-            android:visibility="gone" />
-<!--        TODO(TO BE Implemented)-->
-    </FrameLayout>
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_news"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_feed" />
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black_25" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/ProgressIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:indeterminate="true"
+                app:indicatorColor="@color/black"
+                app:trackColor="@color/red"
+                app:trackCornerRadius="8dp" />
+
+        </FrameLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_news"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_feed" />
+    </LinearLayout>
 
 </LinearLayout>

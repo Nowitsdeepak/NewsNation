@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bottom_appbar_bg"
-        android:visibility="gone"
+        android:visibility="visible"
         app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
         app:itemIconTint="@color/cardview_dark_background"
         app:itemTextColor="@color/mint"

@@ -22,6 +22,7 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
     }
 
     val getNews get() = repository.newsLiveData
+    val status get() = repository.statusLiveData
 
     private fun getNews() {
         viewModelScope.launch {

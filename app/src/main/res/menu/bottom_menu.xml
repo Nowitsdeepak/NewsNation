@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menuHome"
+        android:id="@+id/mainFragment"
         android:enabled="true"
         android:icon="@drawable/home"
         android:title="Home" />
     <item
-        android:id="@+id/menuBookmark"
+        android:id="@+id/bookmarkFragment"
         android:icon="@drawable/bookmark"
         android:title="Bookmarks" />
 </menu>

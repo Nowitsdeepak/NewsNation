@@ -12,12 +12,18 @@ object Constants {
 
     val clist = listOf<Category>(
         Category("All"),
-//        Category("General"),
         Category("Entertainment"),
         Category("Business"),
         Category("Health"),
         Category("Science"),
         Category("Sports"),
         Category("Technology"),
-        )
+    )
+
+    enum class STATUS {
+        NETWORK_ERROR,
+        LOADING,
+        LOADED,
+        EMPTY_LIST
+    }
 }
