@@ -8,7 +8,8 @@ object Constants {
 
     const val BASE_URL = "https://newsapi.org/"
     const val API_KEY = "f2b1c555c06546a7a0fb10b90de52084"
-    const val TABLE_NAME = "articles"
+    const val TABLE_ARTICLE = "articles"
+    const val TABLE_BOOKMARK = "bookmarks"
 
     val clist = listOf<Category>(
         Category("All"),

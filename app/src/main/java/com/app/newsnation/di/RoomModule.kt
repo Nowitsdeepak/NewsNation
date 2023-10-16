@@ -2,6 +2,7 @@ package com.app.newsnation.di
 
 import android.content.Context
 import androidx.room.Room
+import com.app.newsnation.data.local.bookmark.BookmarkDao
 import com.app.newsnation.data.local.NewsDao
 import com.app.newsnation.data.local.NewsDatabase
 import dagger.Module
@@ -28,6 +29,11 @@ class RoomModule {
     @Provides
     fun provideNewsDao(newsDatabase: NewsDatabase): NewsDao {
         return newsDatabase.newsDao()
+    }
+
+    @Provides
+    fun provideBookmarkDao(newsDatabase: NewsDatabase): BookmarkDao {
+        return newsDatabase.bookmarkDao()
     }
 
 }

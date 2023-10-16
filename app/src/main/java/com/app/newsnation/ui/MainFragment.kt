@@ -11,9 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.newsnation.databinding.FragmentMainBinding
+import com.app.newsnation.ui.bookmark.BookmarkViewModel
 import com.app.newsnation.utils.Constants
 import com.app.newsnation.utils.Constants.TAG
 import com.app.newsnation.utils.NetworkUtils
@@ -27,7 +29,9 @@ class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel by viewModels<MainViewModel>()
+    private val mainViewModel: MainViewModel by activityViewModels()
+
+    private val bookMarkViewModel by viewModels<BookmarkViewModel>()
 
     @Inject
     lateinit var networkUtils: NetworkUtils
@@ -36,8 +40,8 @@ class MainFragment : Fragment() {
     private val connectivityReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (networkUtils.isConnectedToNetwork()) {
-                viewModel.refresh()
-                Log.d(TAG, "onReceive: refresh called bordcast")
+                mainViewModel.refresh()
+                Log.d(TAG, "onReceive: Boardcast")
             }
         }
     }
@@ -78,23 +82,45 @@ class MainFragment : Fragment() {
 
             rvCategory.adapter = CategoryAdapter(Constants.clist, onItemClicked = { categoryName ->
 
-                viewModel.setCategory(categoryName)
-                viewModel.refresh()
+                mainViewModel.setCategory(categoryName)
+                mainViewModel.refresh()
 
             })
 
-            val adapter = FeedAdapter()
-            rvNews.adapter = adapter
+            val adapter = FeedAdapter(onClickedItem = { news ->
+                mainViewModel.setCurrentSelection(news)
 
-            viewModel.getNews.observe(viewLifecycleOwner) { news ->
+            }, onBookmarkClicked = { news, isMarked ->
+
+                mainViewModel.markOffline(news, isMarked)
+
+                if (isMarked) {
+                    bookMarkViewModel.checked(news)
+
+                    Log.d(TAG, "setUp: Marked")
+
+                    testToast(requireContext(), "Bookmark Added")
+                } else {
+                    news.title?.let { bookMarkViewModel.unChecked(it) }
+                    Log.d(TAG, "setUp: unMarked ${news.id}")
+
+                    testToast(requireContext(), "Bookmark Removed")
+                }
+            })
+
+            mainViewModel.getNews.observe(viewLifecycleOwner) { news ->
+                Log.d(TAG, "setUp: ${news.size}")
                 news?.let { list ->
+                    Log.d(TAG, "setUp: ${list.size}")
                     adapter.submitList(list)
+                    ProgressIndicator.visibility = View.GONE
+
                 }
             }
 
+            rvNews.adapter = adapter
 
-
-            viewModel.status.observe(viewLifecycleOwner) { status ->
+            mainViewModel.status.observe(viewLifecycleOwner) { status ->
                 when (status!!) {
                     Constants.STATUS.LOADING -> {
                         ProgressIndicator.visibility = View.VISIBLE
@@ -103,11 +129,7 @@ class MainFragment : Fragment() {
                         ProgressIndicator.visibility = View.GONE
                     }
                     Constants.STATUS.NETWORK_ERROR -> {
-
                         includedConnectionError.root.visibility = View.VISIBLE
-                        includedConnectionError.retryConnection.setOnClickListener {
-
-                        }
                     }
 
                     Constants.STATUS.EMPTY_LIST -> {

@@ -2,9 +2,9 @@ package com.app.newsnation.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.app.newsnation.utils.Constants.TABLE_NAME
+import com.app.newsnation.utils.Constants.TABLE_ARTICLE
 
-@Entity(tableName = TABLE_NAME)
+@Entity(tableName = TABLE_ARTICLE)
 data class ArticleEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
@@ -17,4 +17,5 @@ data class ArticleEntity(
     val title: String?,
     val url: String?,
     val urlToImage: String?,
+    var isBookmark: Boolean = false,
 )

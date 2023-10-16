@@ -10,24 +10,7 @@
         android:id="@+id/detailFragment"
         android:label=" "
         android:name="com.app.newsnation.ui.DetailFragment"
-        tools:layout="@layout/fragment_detail">
-        <argument
-            android:name="newsUrl"
-            android:defaultValue=" "
-            app:argType="string" />
-        <argument
-            android:name="imageUrl"
-            android:defaultValue=" "
-            app:argType="string" />
-        <argument
-            android:name="newstitle"
-            android:defaultValue=" "
-            app:argType="string" />
-        <argument
-            android:name="description"
-            android:defaultValue=" "
-            app:argType="string" />
-    </fragment>
+        tools:layout="@layout/fragment_detail"/>
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.app.newsnation.ui.MainFragment"
@@ -39,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/bookmarkFragment"
-        android:name="com.app.newsnation.ui.BookmarkFragment"
+        android:name="com.app.newsnation.ui.bookmark.BookmarkFragment"
         android:label="Bookmark"
         tools:layout="@layout/fragment_bookmark" />
 </navigation>

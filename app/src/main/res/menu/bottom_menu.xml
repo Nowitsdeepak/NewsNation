@@ -8,6 +8,6 @@
         android:title="Home" />
     <item
         android:id="@+id/bookmarkFragment"
-        android:icon="@drawable/bookmark"
+        android:icon="@drawable/menubookmark"
         android:title="Bookmarks" />
 </menu>
