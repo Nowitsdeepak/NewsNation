@@ -9,11 +9,11 @@
     <fragment
         android:id="@+id/detailFragment"
         android:label=" "
-        android:name="com.app.newsnation.ui.DetailFragment"
+        android:name="com.app.newsnation.ui.home.DetailFragment"
         tools:layout="@layout/fragment_detail"/>
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.app.newsnation.ui.MainFragment"
+        android:name="com.app.newsnation.ui.home.MainFragment"
         android:label="News Nation"
         tools:layout="@layout/fragment_main" >
         <action

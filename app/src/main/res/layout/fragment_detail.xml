@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="android.view.View" />
 
         <variable
             name="data"
@@ -10,16 +13,15 @@
 
         <variable
             name="fragmentDetail"
-            type="com.app.newsnation.ui.DetailFragment" />
+            type="com.app.newsnation.ui.home.DetailFragment" />
 
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black"
         android:fitsSystemWindows="true"
-        tools:context=".ui.DetailFragment">
+        tools:context=".ui.home.DetailFragment">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -28,8 +30,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/imageView"
@@ -37,42 +40,48 @@
                     android:layout_height="300dp"
                     android:image_loader="@{data.urlToImage}"
                     android:scaleType="fitXY"
+                    android:visibility="@{ data.urlToImage == null ? View.GONE : View.VISIBLE}"
+                    app:shapeAppearance="@style/CornerRounded"
                     tools:src="@tools:sample/backgrounds/scenic" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:fontFamily="@font/montserrat_semibold"
-                    android:padding="8dp"
                     android:text="@{data.title}"
                     android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
-                    android:textColor="@color/white"
-                    tools:text="title" />
+                    tools:text="@tools:sample/lorem[15]" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="@{data.description}"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                    tools:text="@tools:sample/lorem[20]" />
 
                 <TextView
                     android:id="@+id/tv_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:fontFamily="@font/montserrat_regular"
-                    android:padding="8dp"
                     android:text="@{data.content}"
                     android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
-                    android:textColor="@color/white"
-                    tools:text="description" />
-
+                    tools:text="@tools:sample/lorem[70]" />
 
             </LinearLayout>
 
         </ScrollView>
 
         <Button
-            android:id="@+id/btn_readmore"
+            android:id="@+id/readMore"
             style="@style/Widget.AppCompat.Button"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="bottom"
-            android:onClick="@{()-> fragmentDetail.redirectToBrowser()}"
-            android:text="Read full article" />
-
+            android:text="@string/read_full_article" />
     </FrameLayout>
 </layout>

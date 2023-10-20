@@ -4,7 +4,9 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.app.newsnation.data.local.ArticleEntity
 import com.app.newsnation.utils.Constants.TAG
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,11 +24,9 @@ fun setImage(imageView: ImageView, imgUrl: String?) {
                 placeholder(R.drawable.loading_img)
             }
         }
-    } else {
-        imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
-        imageView.setImageResource(R.drawable.news_nation)
     }
 }
+
 
 @BindingAdapter("android:format_date")
 fun setFormatedDate(textView: TextView, date: String?) {

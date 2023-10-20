@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.app.newsnation.data.local.ArticleEntity
 import com.app.newsnation.data.local.NewsDao
-import com.app.newsnation.data.local.bookmark.BookmarkDao
 import com.app.newsnation.data.network.NewsService
 import com.app.newsnation.model.News
 import com.app.newsnation.utils.Constants
@@ -20,7 +19,6 @@ class MainRepository @Inject constructor(
     private val newsService: NewsService,
     private val newsDao: NewsDao,
     private val networkUtils: NetworkUtils,
-    private val bookmarkDao: BookmarkDao,
 ) {
 
     private val _newsLiveData = MutableLiveData<List<ArticleEntity>>()
@@ -29,45 +27,44 @@ class MainRepository @Inject constructor(
     private val _statusLiveData = MutableLiveData<Constants.STATUS>()
     val statusLiveData: LiveData<Constants.STATUS> get() = _statusLiveData
 
+    private val _bookmarks = MutableLiveData<List<ArticleEntity>>()
+    val bookmarks: LiveData<List<ArticleEntity>> = _bookmarks
+
 
     suspend fun newsDataManager(category: String, country: String = "in") {
 
-        val categoryLower = category.lowercase()
+        val categoryLower: String = if (category == "All") {
+            "general"
+        } else {
+            category.lowercase()
+        }
+
+        Log.d(TAG, "newsDataManager: $categoryLower")
 
         try {
-
             if (networkUtils.isConnectedToNetwork()) {
-
-                when (categoryLower) {
-
-                    "all" -> {
-                        _statusLiveData.value = Constants.STATUS.LOADING
-                        val result = newsService.getAllNews(country = country)
-                        Log.d(TAG, "newsDataManager: $result")
-                        handleAllNews(result)
-
-                    }
-                    else -> {
-                        _statusLiveData.value = Constants.STATUS.LOADING
-                        val result = newsService.getByCategory(
-                            category = categoryLower, country = country
-                        )
-                        handleNews(result)
-                    }
-                }
-            } else {
-                val news = newsDao.getAllNews()
-                news.collect { newsLocal ->
-                    if (newsLocal.isEmpty()) {
-                        _newsLiveData.postValue(emptyList())
-                    }
-                    _statusLiveData.value = Constants.STATUS.LOADED
-                    _newsLiveData.postValue(newsLocal)
-                }
+                if (categoryLower == "general") newsDao.delete()
             }
+
+            _statusLiveData.value = Constants.STATUS.LOADING
+            val result = newsService.getByCategory(category = categoryLower, country = country)
+            Log.d(TAG, "newsDataManager: $result")
+            handleNews(result)
+
         } catch (e: Exception) {
-            _statusLiveData.value = Constants.STATUS.LOADED
-            Log.d(TAG, "newsDataManager: TimeOut")
+
+            Log.d(TAG, "newsDataManager: $e")
+
+            val news = newsDao.getAllNews()
+            news.collect { newsLocal ->
+                if (newsLocal.isEmpty()) {
+                    Log.d(TAG, "newsDataManagerNewsLocal: $newsLocal")
+                    _statusLiveData.value = Constants.STATUS.NETWORK_ERROR
+                }
+                val processed = processData(newsLocal)
+                _newsLiveData.postValue(processed)
+                _statusLiveData.value = Constants.STATUS.LOADED
+            }
         }
     }
 
@@ -76,36 +73,23 @@ class MainRepository @Inject constructor(
             val news = Result.body()!!.asArticleEntities()
             val processed = processData(news)
             _newsLiveData.postValue(processed)
-        } else {
-            _newsLiveData.postValue(emptyList())
+            newsDao.insert(news)
+            _statusLiveData.value = Constants.STATUS.LOADED
         }
     }
 
-    private suspend fun handleAllNews(Result: Response<News>) {
 
-        if (Result.body() != null && Result.isSuccessful) {
-            val news = Result.body()!!.asArticleEntities()
-            val processed = processData(news)
-            _newsLiveData.postValue(processed)
-            newsDao.delete()
-            newsDao.insert(processed)
-
-            Log.d(TAG, "handleAllNews: ")
-//                        TODO(Optimise offline mode)
-        } else {
-            _newsLiveData.postValue(emptyList())
-        }
-    }
-
-    private suspend fun processData(result: List<ArticleEntity>): List<ArticleEntity> {
+    private suspend fun processData(
+        result: List<ArticleEntity>,
+    ): List<ArticleEntity> {
         try {
-            val bookmarks = bookmarkDao.getBookmarks().first()
-
-            result.forEach { news ->
-
-                val isMarked = bookmarks.any { it.title == news.title }
-
-                news.isBookmark = isMarked
+            val bookmarks = newsDao.getBookmarks().first()
+            if (bookmarks.isNotEmpty()) {
+                result.forEach { news ->
+                    val isMarked = bookmarks.any { it.title == news.title }
+                    news.isBookmark = isMarked
+                    Log.d(TAG, "processData: $news")
+                }
             }
         } catch (e: Exception) {
             Log.d(TAG, "processData: $e")
@@ -113,10 +97,17 @@ class MainRepository @Inject constructor(
         return result
     }
 
-    suspend fun markOffline(news: ArticleEntity, isMarked: Boolean) {
-        val toggleMark = news.copy(isBookmark = isMarked)
-        Log.d(TAG, "markOffline: ${news.isBookmark},${toggleMark.isBookmark}")
-        newsDao.update(toggleMark)
+    suspend fun getBookmark() {
+        newsDao.getBookmarks().collect { bookmarks ->
+            Log.d(TAG, "getBookmark: $bookmarks")
+            _bookmarks.postValue(bookmarks)
+        }
     }
 
+    suspend fun bookmark(news: ArticleEntity, isMarked: Boolean) {
+        val toggleMark = news.copy(isBookmark = isMarked)
+        Log.d(TAG, "toggled: ${news.isBookmark},${toggleMark.isBookmark}")
+        newsDao.update(toggleMark)
+        Log.d(TAG, "bookmark: DataUpdated")
+    }
 }

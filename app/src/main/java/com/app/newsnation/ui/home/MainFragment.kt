@@ -1,9 +1,6 @@
-package com.app.newsnation.ui
+package com.app.newsnation.ui.home
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
@@ -12,10 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.newsnation.databinding.FragmentMainBinding
-import com.app.newsnation.ui.bookmark.BookmarkViewModel
 import com.app.newsnation.utils.Constants
 import com.app.newsnation.utils.Constants.TAG
 import com.app.newsnation.utils.NetworkUtils
@@ -31,7 +26,6 @@ class MainFragment : Fragment() {
 
     private val mainViewModel: MainViewModel by activityViewModels()
 
-    private val bookMarkViewModel by viewModels<BookmarkViewModel>()
 
     @Inject
     lateinit var networkUtils: NetworkUtils
@@ -41,11 +35,15 @@ class MainFragment : Fragment() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (networkUtils.isConnectedToNetwork()) {
                 mainViewModel.refresh()
+                binding.rvCategory.visibility = View.VISIBLE
                 Log.d(TAG, "onReceive: Boardcast")
+            } else {
+                binding.rvCategory.visibility = View.GONE
             }
         }
     }
 
+    @Suppress("DEPRECATION")
     override fun onStart() {
         super.onStart()
         val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
@@ -59,63 +57,51 @@ class MainFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentMainBinding.inflate(layoutInflater)
-
         init()
         setUp()
-
         return binding.root
     }
 
 
     private fun init() {
-
         with(binding) {
             rvNews.layoutManager = LinearLayoutManager(requireContext())
         }
-
     }
 
     private fun setUp() {
 
-
         with(binding) {
 
-            rvCategory.adapter = CategoryAdapter(Constants.clist, onItemClicked = { categoryName ->
 
-                mainViewModel.setCategory(categoryName)
-                mainViewModel.refresh()
+            rvCategory.adapter =
 
-            })
+                CategoryAdapter(Constants.clist,
+
+                    onItemClicked = { categoryName ->
+
+                        Log.d(TAG, "setUp: $categoryName")
+                        mainViewModel.setCategory(categoryName)
+                        mainViewModel.refresh()
+
+                    })
 
             val adapter = FeedAdapter(onClickedItem = { news ->
                 mainViewModel.setCurrentSelection(news)
 
             }, onBookmarkClicked = { news, isMarked ->
 
+                Log.d(TAG, "onBookmarkClicked:$news ")
+
                 mainViewModel.markOffline(news, isMarked)
 
-                if (isMarked) {
-                    bookMarkViewModel.checked(news)
-
-                    Log.d(TAG, "setUp: Marked")
-
-                    testToast(requireContext(), "Bookmark Added")
-                } else {
-                    news.title?.let { bookMarkViewModel.unChecked(it) }
-                    Log.d(TAG, "setUp: unMarked ${news.id}")
-
-                    testToast(requireContext(), "Bookmark Removed")
-                }
+            }, onShareClicked = { newsUrl ->
+                redirectToBrowser(newsUrl)
             })
 
             mainViewModel.getNews.observe(viewLifecycleOwner) { news ->
-                Log.d(TAG, "setUp: ${news.size}")
-                news?.let { list ->
-                    Log.d(TAG, "setUp: ${list.size}")
-                    adapter.submitList(list)
-                    ProgressIndicator.visibility = View.GONE
-
-                }
+                emptylist.visibility = if (news.isEmpty()) View.VISIBLE else View.GONE
+                adapter.submitList(news)
             }
 
             rvNews.adapter = adapter
@@ -126,14 +112,13 @@ class MainFragment : Fragment() {
                         ProgressIndicator.visibility = View.VISIBLE
                     }
                     Constants.STATUS.LOADED -> {
-                        ProgressIndicator.visibility = View.GONE
+                        ProgressIndicator.visibility = View.INVISIBLE
                     }
                     Constants.STATUS.NETWORK_ERROR -> {
-                        includedConnectionError.root.visibility = View.VISIBLE
+                        emptylist.visibility = View.VISIBLE
                     }
-
                     Constants.STATUS.EMPTY_LIST -> {
-                        testToast(requireContext(), "Empty data")
+
                     }
                 }
             }
@@ -150,4 +135,17 @@ class MainFragment : Fragment() {
         super.onStop()
         requireActivity().unregisterReceiver(connectivityReceiver)
     }
+
+    private fun redirectToBrowser(news: String) {
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, news)
+        }
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            testToast(requireContext(), "Something went wrong!. Try again latter.")
+        }
+    }
+
 }

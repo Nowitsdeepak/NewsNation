@@ -1,4 +1,4 @@
-package com.app.newsnation.ui
+package com.app.newsnation.ui.home
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -8,10 +8,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.app.newsnation.data.local.ArticleEntity
+import com.app.newsnation.R
 import com.app.newsnation.databinding.FragmentDetailBinding
+import com.app.newsnation.ui.home.MainViewModel
 import com.app.newsnation.utils.Constants.TAG
 import com.app.newsnation.utils.Objects.testToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,47 +26,38 @@ class DetailFragment : Fragment() {
 
     private val viewModel: MainViewModel by activityViewModels()
 
-    private lateinit var newsReceived: ArticleEntity
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         // Inflate the layout for this fragment
-        _binding = FragmentDetailBinding.inflate(layoutInflater)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_detail, container, false)
+        binding.lifecycleOwner = this
         setUp()
         return binding.root
     }
 
-    fun setUp() {
+    private fun setUp() {
 
         viewModel.currentSelection.observe(viewLifecycleOwner) { newsData ->
-            newsReceived = newsData
-            binding.data = newsReceived
+
+            binding.data = newsData
 
             Log.d(TAG, "onViewCreated: $newsData")
-            if (newsData.urlToImage.isNullOrBlank()) {
-                binding.imageView.visibility = View.GONE
+
+            binding.readMore.setOnClickListener {
+                redirectToBrowser(newsData.url)
             }
         }
     }
 
-
-    fun redirectToBrowser() {
-        if (newsReceived.url != null) {
-            val newsSourceUrl = Uri.parse(newsReceived.url)?.let {
-                Intent(Intent.ACTION_VIEW)
-            }
-            try {
-                startActivity(newsSourceUrl!!)
-                Log.d(TAG, "redirectToBrowser: tried")
-            } catch (e: ActivityNotFoundException) {
-                testToast(requireContext(), "Something went wrong!")
-                Log.d(TAG, "redirectToBrowser: something went wrong!")
-            }
-        } else {
-            binding.btnReadmore.visibility = View.GONE
+    private fun redirectToBrowser(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            testToast(requireContext(), "Something went wrong!. Try again latter.")
         }
     }
 

@@ -9,7 +9,6 @@ import javax.inject.Inject
 class NetworkUtils @Inject constructor(private val context: Context) {
 
     fun isConnectedToNetwork(): Boolean {
-        // TODO: Disputed area
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val capabilities =

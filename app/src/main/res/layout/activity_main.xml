@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
@@ -12,13 +11,12 @@
         android:id="@+id/materialToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:title="@string/app_name"
         app:titleCentered="true"
-        app:titleTextColor="@color/white" />
+        app:titleTextAppearance="@style/AppTheme.Toolbar" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
@@ -34,13 +32,9 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bottom_appbar_bg"
-        android:visibility="visible"
-        app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
-        app:itemIconTint="@color/cardview_dark_background"
-        app:itemTextColor="@color/mint"
         app:labelVisibilityMode="selected"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_menu" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

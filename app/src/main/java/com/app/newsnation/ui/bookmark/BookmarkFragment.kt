@@ -20,12 +20,12 @@ class BookmarkFragment : Fragment() {
     private var _binding: FragmentBookmarkBinding? = null
     private val binding get() = _binding!!
 
-    private val bookMarkViewModel by viewModels<BookmarkViewModel>()
+    private val bookmarkViewModel by viewModels<BookmarkViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentBookmarkBinding.inflate(layoutInflater)
         setUp()
@@ -37,16 +37,18 @@ class BookmarkFragment : Fragment() {
 
             rvBookmark.layoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
 
-            val adapter = BookmarkAdapter(onUncheckedClicked = { news ->
-                bookMarkViewModel.unChecked(news)
+            val adapter = BookmarkAdapter(onUncheckedClicked = { news, isMark ->
+                bookmarkViewModel.unCheck(news, isMark)
                 Log.d(TAG, "setUp: Bookmarked Unchecked : $news")
                 Snackbar.make(binding.root, "Bookmark Removed!", Snackbar.LENGTH_SHORT).show()
             })
 
-            rvBookmark.adapter = adapter
-            bookMarkViewModel.getMark.observe(viewLifecycleOwner) {
-                adapter.submitList(it)
+            bookmarkViewModel.bookmarks.observe(viewLifecycleOwner) { bookmarks ->
+                Log.d(TAG, "bookmarks: $bookmarks")
+                if (bookmarks.isNullOrEmpty()) emptylist.visibility = View.VISIBLE
+                adapter.submitList(bookmarks)
             }
+            rvBookmark.adapter = adapter
         }
     }
 

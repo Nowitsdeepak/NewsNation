@@ -1,16 +1,16 @@
 package com.app.newsnation.utils
 
+import android.content.ActivityNotFoundException
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.util.Log
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.startActivity
 import com.app.newsnation.data.local.ArticleEntity
 import com.app.newsnation.model.News
-import com.app.newsnation.utils.Constants.TAG
 
 object Objects {
-
     fun News.asArticleEntities(): List<ArticleEntity> {
         return articles.map {
             ArticleEntity(

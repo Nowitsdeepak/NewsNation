@@ -4,10 +4,10 @@
     <item
         android:id="@+id/mainFragment"
         android:enabled="true"
-        android:icon="@drawable/home"
+        android:icon="@drawable/home_menu_selector"
         android:title="Home" />
     <item
         android:id="@+id/bookmarkFragment"
-        android:icon="@drawable/menubookmark"
+        android:icon="@drawable/bookmark_menu_selector"
         android:title="Bookmarks" />
 </menu>

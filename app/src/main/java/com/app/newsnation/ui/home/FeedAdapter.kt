@@ -1,4 +1,4 @@
-package com.app.newsnation.ui
+package com.app.newsnation.ui.home
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +14,7 @@ import com.app.newsnation.utils.Constants.TAG
 class FeedAdapter(
     private val onClickedItem: (ArticleEntity) -> Unit,
     private val onBookmarkClicked: (ArticleEntity, Boolean) -> Unit,
+    private val onShareClicked: (String) -> Unit,
 ) : ListAdapter<ArticleEntity, FeedAdapter.FeedAdapterViewHolder>(DiffCallBack) {
 
     inner class FeedAdapterViewHolder(var binding: ItemFeedBinding) :
@@ -33,17 +34,25 @@ class FeedAdapter(
         val item = getItem(position)
 
         with(holder) {
-            bindTo(item)
-            binding.feedSurface.setOnClickListener {
-                onClickedItem(item)
-                val action = MainFragmentDirections.actionMainFragmentToDetailFragment()
-                it.findNavController().navigate(action)
-            }
+            with(binding) {
 
-            binding.cbBookmark.setOnClickListener {
-                val isMarked = binding.cbBookmark.isChecked
-                onBookmarkClicked(item, isMarked)
-                Log.d(TAG, "onBindViewHolder: $isMarked ")
+                bindTo(item)
+
+                feedSurface.setOnClickListener {
+                    onClickedItem(item)
+                    val action = MainFragmentDirections.actionMainFragmentToDetailFragment()
+                    it.findNavController().navigate(action)
+                }
+
+                cbBookmark.setOnClickListener {
+                    val isMarked = cbBookmark.isChecked
+                    onBookmarkClicked(item, isMarked)
+                    Log.d(TAG, "onBindViewHolder: $isMarked ")
+                }
+
+                share.setOnClickListener {
+                    onShareClicked(item.url)
+                }
             }
         }
     }
@@ -51,7 +60,7 @@ class FeedAdapter(
 
 object DiffCallBack : ItemCallback<ArticleEntity>() {
     override fun areItemsTheSame(oldItem: ArticleEntity, newItem: ArticleEntity): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.title == newItem.title
     }
 
     override fun areContentsTheSame(oldItem: ArticleEntity, newItem: ArticleEntity): Boolean {

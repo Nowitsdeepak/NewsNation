@@ -1,4 +1,4 @@
-package com.app.newsnation.ui
+package com.app.newsnation.ui.home
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -22,7 +22,6 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
     val currentSelection: LiveData<ArticleEntity> get() = _currentSelection
 
     init {
-        setCategory("all")
         putNews()
     }
 
@@ -31,7 +30,7 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
 
     private fun putNews() {
         viewModelScope.launch {
-            repository.newsDataManager(category = currentCategory.value ?: "all")
+            repository.newsDataManager(category = currentCategory.value ?: "general")
             Log.d(TAG, "ViewModel PutNews: Called")
         }
     }
@@ -52,8 +51,9 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
 
     fun markOffline(news: ArticleEntity, isMarked: Boolean) {
         viewModelScope.launch {
-            repository.markOffline(news, isMarked)
+            repository.bookmark(news, isMarked)
         }
     }
+
 
 }
