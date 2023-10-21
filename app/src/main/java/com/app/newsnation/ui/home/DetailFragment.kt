@@ -44,8 +44,6 @@ class DetailFragment : Fragment() {
 
             binding.data = newsData
 
-            Log.d(TAG, "onViewCreated: $newsData")
-
             binding.readMore.setOnClickListener {
                 redirectToBrowser(newsData.url)
             }

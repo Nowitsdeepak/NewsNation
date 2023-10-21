@@ -36,7 +36,6 @@ class MainFragment : Fragment() {
             if (networkUtils.isConnectedToNetwork()) {
                 mainViewModel.refresh()
                 binding.rvCategory.visibility = View.VISIBLE
-                Log.d(TAG, "onReceive: Boardcast")
             } else {
                 binding.rvCategory.visibility = View.GONE
             }
@@ -80,7 +79,6 @@ class MainFragment : Fragment() {
 
                     onItemClicked = { categoryName ->
 
-                        Log.d(TAG, "setUp: $categoryName")
                         mainViewModel.setCategory(categoryName)
                         mainViewModel.refresh()
 
@@ -90,8 +88,6 @@ class MainFragment : Fragment() {
                 mainViewModel.setCurrentSelection(news)
 
             }, onBookmarkClicked = { news, isMarked ->
-
-                Log.d(TAG, "onBookmarkClicked:$news ")
 
                 mainViewModel.markOffline(news, isMarked)
 

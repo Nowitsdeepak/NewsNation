@@ -31,18 +31,15 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
     private fun putNews() {
         viewModelScope.launch {
             repository.newsDataManager(category = currentCategory.value ?: "general")
-            Log.d(TAG, "ViewModel PutNews: Called")
         }
     }
 
     fun setCategory(category: String) {
-        Log.d(TAG, "putCategory: $category")
         currentCategory.value = category
     }
 
     fun refresh() {
         putNews()
-        Log.d(TAG, "refresh: News Refreshed Called")
     }
 
     fun setCurrentSelection(news: ArticleEntity) {

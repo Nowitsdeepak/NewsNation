@@ -39,12 +39,10 @@ class BookmarkFragment : Fragment() {
 
             val adapter = BookmarkAdapter(onUncheckedClicked = { news, isMark ->
                 bookmarkViewModel.unCheck(news, isMark)
-                Log.d(TAG, "setUp: Bookmarked Unchecked : $news")
                 Snackbar.make(binding.root, "Bookmark Removed!", Snackbar.LENGTH_SHORT).show()
             })
 
             bookmarkViewModel.bookmarks.observe(viewLifecycleOwner) { bookmarks ->
-                Log.d(TAG, "bookmarks: $bookmarks")
                 if (bookmarks.isNullOrEmpty()) emptylist.visibility = View.VISIBLE
                 adapter.submitList(bookmarks)
             }

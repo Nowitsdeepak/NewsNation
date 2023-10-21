@@ -39,8 +39,6 @@ class MainRepository @Inject constructor(
             category.lowercase()
         }
 
-        Log.d(TAG, "newsDataManager: $categoryLower")
-
         try {
             if (networkUtils.isConnectedToNetwork()) {
                 if (categoryLower == "general") newsDao.delete()
@@ -48,17 +46,14 @@ class MainRepository @Inject constructor(
 
             _statusLiveData.value = Constants.STATUS.LOADING
             val result = newsService.getByCategory(category = categoryLower, country = country)
-            Log.d(TAG, "newsDataManager: $result")
             handleNews(result)
 
         } catch (e: Exception) {
 
-            Log.d(TAG, "newsDataManager: $e")
 
             val news = newsDao.getAllNews()
             news.collect { newsLocal ->
                 if (newsLocal.isEmpty()) {
-                    Log.d(TAG, "newsDataManagerNewsLocal: $newsLocal")
                     _statusLiveData.value = Constants.STATUS.NETWORK_ERROR
                 }
                 val processed = processData(newsLocal)
@@ -88,7 +83,6 @@ class MainRepository @Inject constructor(
                 result.forEach { news ->
                     val isMarked = bookmarks.any { it.title == news.title }
                     news.isBookmark = isMarked
-                    Log.d(TAG, "processData: $news")
                 }
             }
         } catch (e: Exception) {
@@ -99,15 +93,12 @@ class MainRepository @Inject constructor(
 
     suspend fun getBookmark() {
         newsDao.getBookmarks().collect { bookmarks ->
-            Log.d(TAG, "getBookmark: $bookmarks")
             _bookmarks.postValue(bookmarks)
         }
     }
 
     suspend fun bookmark(news: ArticleEntity, isMarked: Boolean) {
         val toggleMark = news.copy(isBookmark = isMarked)
-        Log.d(TAG, "toggled: ${news.isBookmark},${toggleMark.isBookmark}")
         newsDao.update(toggleMark)
-        Log.d(TAG, "bookmark: DataUpdated")
     }
 }
