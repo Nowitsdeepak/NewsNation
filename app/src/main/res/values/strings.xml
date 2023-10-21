@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="emptyErrorHeaderBookmark">Empty List</string>
+    <string name="empty">Empty!</string>
+    <string name="emptyErrorBookmarkDiscription">You have not added any bookmark yet!!</string>
+    <string name="read_full_article">Read full article</string>
+    <string name="share">share</string>
+    <string name="emptyErrorHeaderHome">Opps!</string>
+    <string name="emptyErrorHomeDiscription">Something went wrong!!! \n Please Check Your Internet Connection. \n Or Try again latter.</string>
+</resources>
