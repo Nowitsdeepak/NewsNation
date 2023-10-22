@@ -13,7 +13,7 @@ app that contains the following:
 7.) Bookmark Feature *
 8.) Animated Splash Screen (Api 33+ require) *
 
-Download app here <a href = "Click Me](https://drive.google.com/file/d/1rH8r9RSWouFyWdNNqW7uDwFpjEG4oRxg/view?usp=sharing)https://drive.google.com/file/d/1rH8r9RSWouFyWdNNqW7uDwFpjEG4oRxg/view?usp=sharing">Click Me !</a>
+Download app here <a href = "https://drive.google.com/file/d/1rH8r9RSWouFyWdNNqW7uDwFpjEG4oRxg/view?usp=sharing)https://drive.google.com/file/d/1rH8r9RSWouFyWdNNqW7uDwFpjEG4oRxg/view?usp=sharing">Click Me !</a>
 
 Hit a star if you like this app.
 
